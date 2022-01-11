@@ -24,26 +24,24 @@ def move_ball():
     global ball, cube, count, ball_speed, cube_speed_1
     ball_coords = canvas.coords(ball)
     cube_coords = canvas.coords(cube)
-    flag = True
-    if ball_coords[3] < 740:
+    if ball_coords[3] < 800:
         canvas.move(ball, 0, int(ball_speed))
-    else:
-        if flag and ball_coords[0] + 10 >= cube_coords[0] and ball_coords[2] - 10 <= cube_coords[2]:
+        if 739 < ball_coords[3] < 750 and ball_coords[0] + 10 >= cube_coords[0] and ball_coords[2] - 10 <= cube_coords[
+            2]:
             canvas.delete(ball)
             count += 1
             label.config(text=str(count))
-            ball_speed += 0.5
-            cube_speed_1 += 0.5
-
+            if ball_speed < 16:
+                ball_speed += 0.5
+                cube_speed_1 += 0.5
             x_coord = random.randrange(100, 1100)
             ball = canvas.create_oval(x_coord, 20, x_coord + 20, 40, fill='#999900')
-            flag = False
-        elif ball_coords[3] < 800:
-            canvas.move(ball, 0, int(ball_speed))
-        else:
-            canvas.delete(ball)
-            x_coord = random.randrange(100, 1100)
-            ball = canvas.create_oval(x_coord, 20, x_coord + 20, 40, fill='#999900')
+        elif ball_coords[3] > 740:
+            canvas.move(ball, 0, int(ball_speed) - 5)
+    else:
+        label.config(text=f"You have lost with a score of {count}.")
+        master.bind("<KeyPress>", doing_nothing)
+        master.bind("<KeyRelease>", doing_nothing)
 
 
 def main():
@@ -56,6 +54,10 @@ def key_release(event):
     global cube_speed
     if event.keysym in "ad":
         cube_speed = 0
+
+
+def doing_nothing(event):
+    pass
 
 
 cube_speed = 0
@@ -73,7 +75,7 @@ ball_speed = 5
 
 count = 0
 
-label = tkinter.Label(master, text=str(count))
+label = tkinter.Label(text=str(count), font=('Helvetica', 18, 'bold'), bg="#095009", height=1, width=66)
 
 main()
 label.pack()
